@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -31,11 +33,11 @@ public class ContactView extends Application{
 
         final ObservableList<PersonEntry> data =
                 FXCollections.observableArrayList(
-                        new PersonEntry("Jacob", "Smith", "jacob.smith@example.com"),
-                        new PersonEntry("Isabella", "Johnson", "isabella.johnson@example.com"),
-                        new PersonEntry("Ethan", "Williams", "ethan.williams@example.com"),
-                        new PersonEntry("Emma", "Jones", "emma.jones@example.com"),
-                        new PersonEntry("Michael", "Brown", "michael.brown@example.com")
+                        new PersonEntry("Jacob", "Smith", "jacob.smith@example.com", ""),
+                        new PersonEntry("Isabella", "Johnson", "isabella.johnson@example.com", "isabella.johnson@example.com"),
+                        new PersonEntry("Ethan", "Williams", "ethan.williams@example.com", ""),
+                        new PersonEntry("Emma", "Jones", "emma.jones@example.com", ""),
+                        new PersonEntry("Michael", "Brown", "michael.brown@example.com", "")
                 );
 
         TableColumn<PersonEntry, String> nameColumn = new TableColumn<>("Name");
@@ -47,18 +49,32 @@ public class ContactView extends Application{
         TableColumn<PersonEntry, Integer> phoneColumn = new TableColumn<>("Phone Number");
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
-        TableColumn<PersonEntry, String> firstEmail = new TableColumn<>("Primary");
-        firstEmail.setCellValueFactory(new PropertyValueFactory<>("primary email"));
+        TableColumn<PersonEntry, String> primaryEmail = new TableColumn<>("Primary");
+        primaryEmail.setCellValueFactory(new PropertyValueFactory<>("primary email"));
 
-        TableColumn<PersonEntry, String> secondEmail = new TableColumn<>("Secondary");
-        secondEmail.setCellValueFactory(new PropertyValueFactory<>("second email"));
+        TableColumn<PersonEntry, String> secondaryEmail = new TableColumn<>("Secondary");
+        secondaryEmail.setCellValueFactory(new PropertyValueFactory<>("second email"));
 
-        emailColumn.getColumns().addAll(firstEmail, secondEmail);
 
         table.getColumns().addAll(nameColumn, phoneColumn, emailColumn);
 
+        //emailColumn.getColumns().addAll(primaryEmail, secondaryEmail);
+
+
         table.setEditable(true);
         table.setItems(data);
+
+        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        nameColumn.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<PersonEntry, String>>() {
+                    @Override
+                    public void handle(TableColumn.CellEditEvent<PersonEntry, String> t) {
+                        ((PersonEntry) t.getTableView().getItems().get(
+                                t.getTablePosition().getRow())
+                        ).setName(t.getNewValue());
+                    }
+                }
+        );
 
         Button btnAdd = new Button("Add Contact:");
         Button btnEdit = new Button("Edit Contact");
@@ -73,10 +89,12 @@ public class ContactView extends Application{
         tfPhoneNumber.setPrefWidth(100);
 
         TextField tfEmail = new TextField("");
-        tfEmail.setPromptText("(email)");
+        tfEmail.setPromptText("(email - primary)");
         tfEmail.setPrefWidth(100);
 
-
+        TextField tfEmailS = new TextField("");
+        tfEmailS.setPromptText("(email - secondary)");
+        tfEmailS.setPrefWidth(100);
 
         GridPane g = new GridPane();
         g.add(table, 0, 0);
@@ -84,12 +102,13 @@ public class ContactView extends Application{
         g.add(tfName, 0, 1);
         g.add(tfPhoneNumber, 1, 1);
         g.add(tfEmail, 2, 1);
+        g.add(tfEmailS, 3, 1);
 
         g.add(btnAdd, 0, 2);
         g.add(btnDelete, 1, 2);
         g.add(btnEdit, 2,2);
 
-        Scene scene = new Scene(g, 500, 500);
+        Scene scene = new Scene(g, 750, 500);
         stage.setTitle("Phone Book Editor");
         stage.setScene(scene);
         stage.show();
