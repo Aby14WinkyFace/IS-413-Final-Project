@@ -1,28 +1,35 @@
 package com.example.mvcfinal_2023;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContactModel {
-    public void changeName(String name){
+    private List<PersonEntry> contacts;
 
-
-        this.save();
-
+    public ContactModel() {
+        contacts = new ArrayList<>();
     }
 
-    public void changePhone(String phone){
-
-        this.save();
-
+    public void addContact(PersonEntry contact) {
+        contacts.add(contact);
     }
 
-    public void changeEmail(String email){
-
-        this.save();
-
+    public void removeContact(PersonEntry contact) {
+        contacts.remove(contact);
     }
-    private void save(){
-        //save function
+    public void editContact(PersonEntry contact, String newName, String newEmail,
+                            String newPhoneNumber) {
+        int index = contacts.indexOf(contact);
+        if (index != -1) {
+            contact.setName(newName);
+            contact.setEmail(newEmail);
+            contact.setPhoneNumber(newPhoneNumber);
+            contacts.set(index, contact);
+        }
     }
-    private void load(){
-        //load data function
+
+    public List<PersonEntry> getContacts() {
+        return contacts;
     }
 }
