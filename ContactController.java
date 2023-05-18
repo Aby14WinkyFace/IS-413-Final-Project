@@ -3,7 +3,6 @@ package com.example.mvcfinal_2023;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +32,7 @@ public class ContactController {
     public void saveContactsToFile(String filePath) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (PersonEntry contact : contactModel.getContacts()) {
-                writer.println(contact.getName() + "," + contact.getEmail() + "," + contact.getPhoneNumber());
+                writer.println(contact.getName() + "," + contact.getEmail() + "," + contact.getPhoneNumber() + "," + contact.getEmailS());
             }
         } catch (IOException e) {
             e.printStackTrace();
