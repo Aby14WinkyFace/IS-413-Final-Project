@@ -19,12 +19,13 @@ public class ContactModel {
         contacts.remove(contact);
     }
     public void editContact(PersonEntry contact, String newName, String newEmail,
-                            String newPhoneNumber) {
+                            String newPhoneNumber, String newEmailS) {
         int index = contacts.indexOf(contact);
         if (index != -1) {
             contact.setName(newName);
             contact.setEmail(newEmail);
             contact.setPhoneNumber(newPhoneNumber);
+            contact.setEmailS(newEmailS);
             contacts.set(index, contact);
         }
     }
