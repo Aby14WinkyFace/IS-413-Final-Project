@@ -4,16 +4,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 public class PersonEntry {
-    String name;
-    String phoneNumber;
-    String email;
-    DecimalFormat phoneFormat = new DecimalFormat("###-###-####");
+    private String name;
+    private String phoneNumber;
+    private String email;
+    private DecimalFormat phoneFormat = new DecimalFormat("###-###-####");
 
-    PersonEntry(String name, String phoneNumber, String email){
+    public PersonEntry(String name, String phoneNumber, String email){
         this.name = name;
-        //this.phoneNumber = phoneFormat.format(phoneNumber);
-        this.email = email;
         this.phoneNumber = phoneNumber;
+        this.email = email;
     }
 
     public String getEmail() {
