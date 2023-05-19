@@ -1,59 +1,61 @@
 package com.example.mvcfinal_2023;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 public class PersonEntry {
-    private String name;
-    private String phoneNumber;
-    private String email;
-    private String emailS;
-    private DecimalFormat phoneFormat = new DecimalFormat("###-###-####");
+    private String fName;
+    private String lName;
+    private Long phoneNumber;
+    private String priEmail;
+    private String secEmail;
 
-    /*public PersonEntry(String name, String phoneNumber, String email){
-        this.name = name;
+    public PersonEntry(String fName, String lName, Long phoneNumber, String priEmail, String secEmail){
+        this.fName = fName;
+        this.lName = lName;
         this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.emailS = "";
+        this.priEmail = priEmail;
+        this.secEmail = secEmail;
     }
 
-     */
-    public PersonEntry(String name, String phoneNumber, String email, String emailS){
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.emailS = emailS;
+    public String getPriEmail() {
+        return priEmail;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSecEmail() {
+        return secEmail;
     }
 
-    public String getName() {
-        return name;
+    public String getFName() {
+        return fName;
     }
 
-    public String getPhoneNumber() {
+    public String getLName() {
+        return lName;
+    }
+
+    public Long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public String getEmailS(){
-        return emailS;
+    public void setPriEmail(String priEmail) {
+        this.priEmail = priEmail;
+    }
+    public void setSecEmail(String secEmail) {
+        this.secEmail = secEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFName(String fName) {
+        this.fName = fName;
+    }
+    public void setLName(String lName) {
+        this.lName = lName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-    public void setEmailS(String emailS){
-        this.emailS = emailS;
+        phoneNumber = phoneNumber.replace("L", "");
+        this.phoneNumber = Long.valueOf(phoneNumber);
     }
 
 }
