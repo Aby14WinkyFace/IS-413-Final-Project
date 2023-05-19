@@ -2,122 +2,132 @@ package com.example.mvcfinal_2023;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
-
-public class ContactView extends Application{
+public class ContactView extends Application {
 
     private TableView<PersonEntry> tableView;
     private ContactModel contactModel;
+    private ContactController contactController;
+    Button btnAdd = new Button("Add Contact");
+    Button btnEdit = new Button("Edit Contact");
+    Button btnDelete = new Button("Delete Selected Contact");
+    Button btnSave = new Button("Save Contacts");
+    TextField tfFirstName;
+    TextField tfLastName;
+    TextField tfPhoneNumber;
+    TextField tfFirstEmail;
+    TextField tfSecondEmail;
 
     @Override
-    public void start(Stage stage){
-
+    public void start(Stage stage) {
         contactModel = new ContactModel();
+        tableView = new TableView<PersonEntry>();
+        contactController = new ContactController(contactModel, tableView, this);
 
-        TableView table = new TableView<PersonEntry>();
+        contactModel.contacts = contactController.readContactsFromFile();
 
-        final ObservableList<PersonEntry> data =
-                FXCollections.observableArrayList(
-                        new PersonEntry("Jacob", "Smith", "jacob.smith@example.com", ""),
-                        new PersonEntry("Isabella", "Johnson", "isabella.johnson@example.com", "isabella.johnson@example.com"),
-                        new PersonEntry("Ethan", "Williams", "ethan.williams@example.com", ""),
-                        new PersonEntry("Emma", "Jones", "emma.jones@example.com", ""),
-                        new PersonEntry("Michael", "Brown", "michael.brown@example.com", "")
-                );
+        TableColumn<PersonEntry, String> fNameColumn = new TableColumn<>("First Name");
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
-        TableColumn<PersonEntry, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<PersonEntry, String> lNameColumn = new TableColumn<>("Last Name");
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lName"));
 
         TableColumn<PersonEntry, String> emailColumn = new TableColumn<>("Email");
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        TableColumn<PersonEntry, Integer> phoneColumn = new TableColumn<>("Phone Number");
+        TableColumn<PersonEntry, Long> phoneColumn = new TableColumn<>("Phone Number");
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
 
-        TableColumn<PersonEntry, String> primaryEmail = new TableColumn<>("Primary");
-        primaryEmail.setCellValueFactory(new PropertyValueFactory<>("primary email"));
+        TableColumn<PersonEntry, String> firstEmail = new TableColumn<>("Primary");
+        firstEmail.setCellValueFactory(new PropertyValueFactory<>("priEmail"));
 
-        TableColumn<PersonEntry, String> secondaryEmail = new TableColumn<>("Secondary");
-        secondaryEmail.setCellValueFactory(new PropertyValueFactory<>("second email"));
+        TableColumn<PersonEntry, String> secondEmail = new TableColumn<>("Secondary");
+        secondEmail.setCellValueFactory(new PropertyValueFactory<>("secEmail"));
 
+        emailColumn.getColumns().addAll(firstEmail, secondEmail);
 
-        table.getColumns().addAll(nameColumn, phoneColumn, emailColumn);
+        fNameColumn.setMinWidth(100);
+        lNameColumn.setMinWidth(100);
+        phoneColumn.setMinWidth(100);
+        emailColumn.setMinWidth(250);
+        firstEmail.setMinWidth(125);
+        secondEmail.setMinWidth(125);
 
-        //emailColumn.getColumns().addAll(primaryEmail, secondaryEmail);
+        tableView.getColumns().addAll(fNameColumn, lNameColumn, phoneColumn, emailColumn);
 
+        tableView.setEditable(true);
+        tableView.setItems(FXCollections.observableArrayList(contactModel.contacts));
 
-        table.setEditable(true);
-        table.setItems(data);
+        tfFirstName = new TextField("");
+        tfFirstName.setPromptText("First Name");
+        tfFirstName.setPrefWidth(100);
 
-        nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        nameColumn.setOnEditCommit(
-                new EventHandler<TableColumn.CellEditEvent<PersonEntry, String>>() {
-                    @Override
-                    public void handle(TableColumn.CellEditEvent<PersonEntry, String> t) {
-                        ((PersonEntry) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                        ).setName(t.getNewValue());
-                    }
-                }
-        );
+        tfLastName = new TextField("");
+        tfLastName.setPromptText("Last Name");
+        tfLastName.setPrefWidth(100);
 
-        Button btnAdd = new Button("Add Contact:");
-        Button btnEdit = new Button("Edit Contact");
-        Button btnDelete = new Button("Delete Selected Contact");
-
-        TextField tfName = new TextField("");
-        tfName.setPromptText("(name)");
-        tfName.setPrefWidth(100);
-
-        TextField tfPhoneNumber = new TextField("");
-        tfPhoneNumber.setPromptText("(number)");
+        tfPhoneNumber = new TextField("");
+        tfPhoneNumber.setPromptText("Phone");
         tfPhoneNumber.setPrefWidth(100);
 
-        TextField tfEmail = new TextField("");
-        tfEmail.setPromptText("(email - primary)");
-        tfEmail.setPrefWidth(100);
+        tfFirstEmail = new TextField("");
+        tfFirstEmail.setPromptText("Primary Email");
+        tfFirstEmail.setPrefWidth(100);
 
-        TextField tfEmailS = new TextField("");
-        tfEmailS.setPromptText("(email - secondary)");
-        tfEmailS.setPrefWidth(100);
+        tfSecondEmail = new TextField("");
+        tfSecondEmail.setPromptText("Second Email");
+        tfSecondEmail.setPrefWidth(100);
 
-        GridPane g = new GridPane();
-        g.add(table, 0, 0);
+        BorderPane border = new BorderPane();
+        border.setPadding(new javafx.geometry.Insets(10));
+        VBox tableBox = new VBox();
+        HBox textBoxes = new HBox();
+        HBox buttonBox = new HBox();
+        VBox optionsBox = new VBox();
 
-        g.add(tfName, 0, 1);
-        g.add(tfPhoneNumber, 1, 1);
-        g.add(tfEmail, 2, 1);
-        g.add(tfEmailS, 3, 1);
+        tableBox.getChildren().addAll(tableView);
 
-        g.add(btnAdd, 0, 2);
-        g.add(btnDelete, 1, 2);
-        g.add(btnEdit, 2,2);
+        contactController.setupButtonHandlers();
 
-        Scene scene = new Scene(g, 750, 500);
+        textBoxes.setSpacing(10);
+        textBoxes.setAlignment(Pos.CENTER);
+        textBoxes.getChildren().addAll(tfFirstName, tfLastName, tfPhoneNumber, tfFirstEmail, tfSecondEmail);
+
+        buttonBox.setSpacing(10);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.getChildren().addAll(btnAdd, btnEdit, btnDelete, btnSave);
+
+        optionsBox.setSpacing(10);
+        optionsBox.getChildren().addAll(textBoxes, buttonBox);
+
+        border.setCenter(tableBox);
+        border.setBottom(optionsBox);
+
+        Scene scene = new Scene(border, 550, 500);
         stage.setTitle("Phone Book Editor");
         stage.setScene(scene);
         stage.show();
-
-        btnAdd.setOnAction(e -> {
-            //ContactController.entryEntered(tfName.getText(),tfPhoneNumber.getText(),tfEmail.getText());
-        });
-
     }
 
-}
+    public Button getBtnAdd() {
+        return btnAdd;
+    }
 
+    public Button getBtnEdit() {
+        return btnEdit;
+    }
+
+    public Button getBtnDelete() {
+        return btnDelete;
+    }
+
+    public Button getBtnSave() {
+        return btnSave;
+    }
+}
